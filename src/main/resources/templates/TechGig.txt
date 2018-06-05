@@ -1,0 +1,112 @@
+
+public class GameOfLife_TechGig {
+
+	public static void main(String[] args) {
+
+		int input1[] = { 7, 3, 4, 2, 3, 3, 3, 3 };
+		int input2[] = { 12, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0 };
+
+		int result[][] = survival(input1, input2);
+
+	}
+
+	private static int[][] survival(int[] input1, int[] input2) {
+
+		if (input1.length != 8) {
+
+			return null;
+		}
+
+		int row = input1[1];
+
+		int columns = input1[2];
+
+		int count = 1;
+		int boardData[][] = new int[row][columns];
+
+		for (int i = 0; i < row; i++) {
+
+			for (int j = 0; j < columns; j++) {
+
+				boardData[i][j] = input2[count];
+				++count;
+			}
+
+		}
+
+		return board(boardData, row, columns, input1);
+
+	}
+
+	private static int[][] board(int[][] boardData, int rows, int columns, int[] input1) {
+
+		int g = input1[7];
+
+		for (int i = 0; i < g; i++) {
+
+			nextGeneration(boardData, rows, columns, input1);
+
+		}
+		for (int ii = 0; ii < rows; ii++) {
+
+			for (int j = 0; j < columns; j++) {
+				System.out.print(boardData[ii][j]);
+			}
+			System.out.println();
+		}
+		System.out.println("-----------------");
+
+		return boardData;
+
+	}
+
+	private static void nextGeneration(int[][] boardData, int rows, int columns, int[] input1) {
+
+		int s1 = input1[3];
+		int s2 = input1[4];
+		int b1 = input1[5];
+		int b2 = input1[6];
+
+		for (int i = 0; i < rows; i++) {
+
+			for (int j = 0; j < columns; j++) {
+
+				int countNeighbours = countNeighbours(boardData, i, j, rows, columns);
+
+				if (boardData[i][j] == 1 && countNeighbours >= s1 && countNeighbours <= s2) {
+					boardData[i][j] = 3;
+				} else if (boardData[i][j] == 0 && countNeighbours >= b1 && countNeighbours <= b2) {
+					boardData[i][j] = 2;
+				}
+
+			}
+		}
+
+		for (int i = 0; i < rows; i++) {
+
+			for (int j = 0; j < columns; j++) {
+				// rigth shift 1 bit
+				boardData[i][j] >>= 1;
+			}
+
+		}
+
+	}
+
+	private static int countNeighbours(int[][] arry, int i, int j, int rows, int columns) {
+
+		int lives = 0;
+
+		for (int x = Math.max(i - 1, 0); x <= Math.min(i + 1, rows - 1); x++) {
+
+			for (int y = Math.max(j - 1, 0); y <= Math.min(j + 1, columns - 1); y++) {
+
+				lives += arry[x][y] & 1;
+			}
+
+		}
+
+		lives -= arry[i][j] & 1;
+		return lives;
+	}
+}
